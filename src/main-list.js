@@ -6,7 +6,8 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
 const searchName = txt => {
@@ -15,12 +16,29 @@ const searchName = txt => {
     text: txt
   };
 };
+const buttonPress = () => {
+  return {
+    type: 'SEARCH_BUTTON_PRESS'
+  };
+};
 const { height, width } = Dimensions.get('window');
 
 class List extends React.Component {
   renderItem(item, index) {
     return (
-      <View style={{ height: 50, width: width - 40, borderWidth: 1 }}>
+      <View
+        style={{
+          height: 50,
+          width: width,
+          borderBottomWidth: 1,
+          flexDirection: 'row',
+          justifyContent: 'center'
+        }}
+      >
+        <Image
+          source={{ uri: item.avatar_url }}
+          style={{ height: 50, width: 50, borderRadius: 25 }}
+        />
         <Text>{item.login}</Text>
       </View>
     );
@@ -29,7 +47,7 @@ class List extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ backgroundColor: 'red', height: 70, width: width }} />
-        <View style={{ padding: 20 }}>
+        <View>
           <TextInput
             onChangeText={
               txt => this.props.dispatch(searchName(txt))
@@ -47,24 +65,32 @@ class List extends React.Component {
               padding: 5,
               paddingLeft: 15,
               fontSize: 12,
-              borderColor: 'rgb(233,238,241)'
+              borderColor: 'rgb(233,238,241)',
+              margin: 20
             }}
           />
           <TouchableOpacity
+            onPress={() => this.props.dispatch(buttonPress())}
             style={{
               backgroundColor: 'red',
               alignSelf: 'center',
-              marginTop: 20,
               height: 50,
               width: 300,
-              borderRadius: 5
+              borderRadius: 5,
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
-          />
-          <FlatList
-            data={this.props.listReducer.listArray}
-            renderItem={({ item, index }) => this.renderItem(item, index)}
-            keyExtractor={(item, index) => item.id.toString()}
-          />
+          >
+            <Text style={{ fontWeight: 'bold', color: 'white' }}>SEARCH</Text>
+          </TouchableOpacity>
+          <View style={{ height: height - 202 }}>
+            <FlatList
+              data={this.props.listReducer.listArray}
+              style={{ marginTop: 20 }}
+              renderItem={({ item, index }) => this.renderItem(item, index)}
+              keyExtractor={(item, index) => item.id.toString()}
+            />
+          </View>
         </View>
       </View>
     );
